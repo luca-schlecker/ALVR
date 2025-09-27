@@ -6,6 +6,7 @@
 #include "FrameRender.h"
 #include "VideoEncoder.h"
 #include "VideoEncoderAMF.h"
+#include "VideoEncoderVPL.h"
 #include "VideoEncoderNVENC.h"
 #include "alvr_server/Utils.h"
 #include <d3d11.h>

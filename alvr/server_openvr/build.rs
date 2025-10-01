@@ -21,6 +21,11 @@ fn get_linux_x264_path() -> PathBuf {
     alvr_filesystem::deps_dir().join("linux/x264/alvr_build")
 }
 
+#[cfg(target_os = "windows")]
+fn get_windows_libvpl_path() -> PathBuf {
+    alvr_filesystem::deps_dir().join("windows/libvpl/alvr_build")
+}
+
 fn main() {
     let platform_name = env::var("CARGO_CFG_TARGET_OS").unwrap();
     let out_dir = PathBuf::from(env::var("OUT_DIR").unwrap());
@@ -100,6 +105,21 @@ fn main() {
 
     #[cfg(feature = "gpl")]
     build.define("ALVR_GPL", None);
+
+    #[cfg(target_os = "windows")]
+    {
+        let vpl_path = get_windows_libvpl_path();
+        let vpl_include_path = vpl_path.join("include");
+        let vpl_lib_path = vpl_path.join("lib");
+
+        println!(
+            "cargo:rustc-link-search=native={}",
+            vpl_lib_path.to_string_lossy()
+        );
+
+        build.include(vpl_include_path);
+        println!("cargo:rustc-link-lib=static=vpl");
+    }
 
     build.compile("bindings");
 
